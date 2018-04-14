@@ -23,15 +23,33 @@ var question = new db.Question({
 	choice3 : choice3
 })
 
+// var question = new db.Question({
+// 	question : question,
+// 	choice1 : {name: choice1, hits: 0}
+// 	choice2 : {name: choice2, hits: 0}
+// 	choice3 : {name: choice3, hits: 0}
+// })
 
 question.save(function(){console.log("saved")})
 
 })
 app.get('/poll',function(req,res){
 	db.Question.find({},function(err,questions){
-		res.send(questions)
+		res.send("<h1>"+questions[3].question+"</h1><br><form \
+			action='/poll' method='post'><label for='choice1'>"+questions[3].choice1+"</label>\
+      <input type='submit' id='choice1' value='vote' name='choice1'></form>"+
+      "<form action='/poll' method='post'><label for='choice2'>"+questions[3].choice2+"</label>\
+      <input type='submit' id='choice2' value='vote' name='choice2'></form>"+
+      "<form action='/poll' method='post'><label for='choice3'>"+questions[3].choice3+"</label>\
+      <input type='submit' id='choice3' value='vote' name='choice3'></form>")
 	})
-	
+
+})
+
+app.post('/poll',function(req,res){
+	console.log("poll post", req.body)
+
+	res.redirect("/poll");
 })
 var port =3000;
 app.listen(port,function(){

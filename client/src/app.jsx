@@ -37,10 +37,10 @@ class App extends React.Component {
 	render (){
 		 return (<div>
       	<h1>Your Pull</h1>
-      	enter your question <input type= "text" value={this.state.question} onChange={this.onchange.bind(this, 'question')}/>
-      	enter your first choice<input type= "text" value={this.state.choice1} onChange={this.onchange.bind(this, 'choice1')} />
-      	enter your second choice<input type= "text" value={this.state.choice2} onChange={this.onchange.bind(this, 'choice2')} />
-      	enter your third choice<input type= "text" value={this.state.choice3} onChange={this.onchange.bind(this, 'choice3')}/>
+      	enter your question <input type= "text" value={this.state.inputs.question} onChange={this.onchange.bind(this, 'question')}/>
+      	enter your first choice<input type= "text" value={this.state.inputs.choice1} onChange={this.onchange.bind(this, 'choice1')} />
+      	enter your second choice<input type= "text" value={this.state.inputs.choice2} onChange={this.onchange.bind(this, 'choice2')} />
+      	enter your third choice<input type= "text" value={this.state.inputs.choice3} onChange={this.onchange.bind(this, 'choice3')}/>
       	<button onClick= {this.onclick.bind(this)}>create</button>
     	</div>)
 
