@@ -9,51 +9,46 @@ app.use(parser.urlencoded({ extended: true }));
 app.post('/',function(req,res){
 	console.log(req.body)
 	console.log(req.body.question)
-
+	var route = req.body.route
 	var question = req.body.question;
 	var choice1 = req.body.choice1;
 	var choice2 = req.body.choice2;
 	var choice3 = req.body.choice3;
 
-
 var question = new db.Question({
-	question : question,
-	choice1 : choice1,
-	choice2 : choice2,
-	choice3 : choice3
-})
-
-var question = new db.Question({
+	route  : route,
 	question : question,
 	choice1 : {name: choice1, hits: 0},
 	choice2 : {name: choice2, hits: 0},
 	choice3 : {name: choice3, hits: 0}
 })
 
-question.save(function(){console.log("saved")})
+question.save(function(err, data){console.log("saved")
+res.send("your poll has been generated!, your route is: "+data.route)})
 
 })
-app.get('/poll',function(req,res){
-	db.Question.find({},function(err,questions){
-		res.send("<h1>"+questions[3].question+"</h1><br><form \
-			action='/poll' method='post'><label for='choice1'>"+questions[4].choice1.name+"</label>\
-      <input type='submit' id='choice1' value='vote' name='choice1'><p>"+questions[4].choice3.hits+"</p></form>"+
-      "<form action='/poll' method='post'><label for='choice2'>"+questions[4].choice2.name+"</label>\
-      <input type='submit' id='choice2' value='vote' name='choice2'><p>"+questions[4].choice2.hits+"</p></form>"+
-      "<form action='/poll' method='post'><label for='choice3'>"+questions[4].choice3.name+"</label>\
-      <input type='submit' id='choice3' value='vote' name='choice3'><p>"+questions[4].choice3.hits+"</p></form>")
+app.get('/*',function(req,res){
+	
+	db.Question.find({route : req.url},function(err,question){
+		res.send("<h1 style='font-size: 45px'>"+question[0].question+"</h1><br><form \
+					action="+question[0].route+" method='post'><label style='font-size: 25px' for='choice1'>"+question[0].choice1.name+"</label>\
+		      <input type='submit' id='choice1' style= 'width:3% ;font-size: 30px; height:10%;' value='vote' name='choice1'><p style='font-size: 20px'>"+question[0].choice1.hits+"</p></form>"+
+		      "<form action="+question[0].route+" method='post'><label style='font-size: 25px'' for='choice2'>"+question[0].choice2.name+"</label>\
+		      <input type='submit' id='choice2' style= 'width:3%; font-size: 30px; height:10%;' value='vote' name='choice2'><p style='font-size: 20px'>"+question[0].choice2.hits+"</p></form>"+
+		      "<form action="+question[0].route+" method='post'><label style='font-size: 25px' for='choice3'>"+question[0].choice3.name+"</label>\
+		      <input type='submit' id='choice3' style= 'width:3%; font-size: 30px; height:10%;' value='vote' name='choice3'><p style='font-size: 20px'>"+question[0].choice3.hits+"</p></form></body>")
 	})
 
 })
 
-app.post('/poll',function(req,res){
-	console.log("poll post", req.body)
-if(req.body.choice1){db.Question.update({ question: "how do you feel" }, { 'choice1.hits' :'choice1.hits'+1}, function(){});}
-if(req.body.choice2){db.Question.update({ question: "how do you feel" }, { 'choice2.hits' :'choice1.hits'+1}, function(){});}
-if(req.body.choice3){db.Question.update({ question: "how do you feel" }, { 'choice3.hits' :'choice1.hits'+1}, function(){});}
+app.post('/*',function(req,res){
+	console.log(req.url) 
+if(req.body.choice1){db.Question.update({route : req.url}, { $inc: {'choice1.hits': 1 } }, function(){});}
+if(req.body.choice2){db.Question.update({route : req.url}, { $inc: {'choice2.hits': 1 }}, function(){});}
+if(req.body.choice3){db.Question.update({route : req.url}, { $inc: {'choice3.hits': 1 }}, function(){});}
 
 	
-	res.redirect("/poll");
+	res.redirect(req.url);
 })
 var port =3000;
 app.listen(port,function(){
